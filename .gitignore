@@ -4,8 +4,6 @@ include
 logs
 pip-selfcheck.json
 backup
-datas/*
-!datas/.keep
 .env
 *.db*
 *.sqlite3

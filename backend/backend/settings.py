@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'hx&)(%4wt0dgu=mryondei@hscwc%ha#u=2-_ez*!cwot^uw%e'
+SECRET_KEY = 'kerkerker.this.is.your.secret.key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
+    'boards',
+    'candidates'
 ]
 
 MIDDLEWARE = [
@@ -75,10 +78,13 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
     }
 }
+
+# Set USE_NATIVE_JSONFIELD to True when using PostgreSQL
+# See https://github.com/pennersr/django-allauth/issues/598 for detail info
+USE_NATIVE_JSONFIELD = True
 
 
 # Password validation
@@ -105,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Taipei'
 
 USE_I18N = True
 
@@ -118,3 +124,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# To overwrite config, or define per-env conf, use backend.settings_local
+# Additional features:
+# 1. Sentry: https://docs.sentry.io/clients/python/integrations/django/
+try:
+    from backend.settings_local import *
+except ImportError:
+    print('backend.settings_local.py is not found, use default setting.')
