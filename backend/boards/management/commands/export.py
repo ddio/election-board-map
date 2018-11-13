@@ -8,11 +8,22 @@ class Command(BaseCommand):
     help = '把想要的資料會出成 JSON'
     export_dir = path.join(path.dirname(path.realpath(__file__)), '../../../../datas')
 
-    def handle(self, *args, **options):
-        # 匯出所有資料，無論有無查核過
-        # 匯出的東西放在 datas/boards.json, datas/candidates.json
+    def dump_it(self, queryset, formatter):
+        ret = {}
+        for row in queryset:
+            detail = {}
+            for field in formatter:
+                value = getattr(row, field)
+                if formatter[field] is True:
+                    detail[field] = value
+                else:
+                    detail[field] = formatter[field](value)
 
-        board_dict = {}
+            ret[row.pk] = detail
+
+        return ret
+
+    def export_boards(self):
         board_fields = {
             'id': True,
             'image': lambda x: path.basename(x),
@@ -23,17 +34,37 @@ class Command(BaseCommand):
             'verified_amount': True,
             'candidates': lambda candidates: list(map(lambda cand: cand.id, candidates.all()))
         }
-        for board in Boards.objects.all():
-            detail = {}
-            for field in board_fields:
-                value = getattr(board, field)
-                if board_fields[field] is True:
-                    detail[field] = value
-                else:
-                    detail[field] = board_fields[field](value)
+        board_dict = self.dump_it(Boards.objects.all(), board_fields)
 
-            board_dict[board.id] = detail
-
+        self.stdout.write('Export {} boards'.format(len(board_dict)))
         with open(path.join(self.export_dir, 'boards.json'), 'w') as outfile:
-            json.dump(board_dict, outfile)
+            json.dump(board_dict, outfile, ensure_ascii=False)
+
+    def export_candidates(self):
+        formatter = {
+            'id': True,
+            'number': True,
+            'name': True,
+            'party': True,
+            'county': True,
+            'district': True,
+            'image': True,
+            'candidate': lambda x: x.id,
+            'type': True,
+            'boards_set': lambda boards: list(map(lambda board: board.id, boards.all()))
+        }
+        candidates = self.dump_it(
+            Terms.objects.filter(election_year='2018'),
+            formatter
+        )
+        self.stdout.write('Export {} candidates'.format(len(candidates)))
+        with open(path.join(self.export_dir, 'candidates.json'), 'w') as outfile:
+            json.dump(candidates, outfile, ensure_ascii=False)
+
+    def handle(self, *args, **options):
+        # 匯出所有資料，無論有無查核過
+        # 匯出的東西放在 datas/boards.json, datas/candidates.json
+
+        self.export_boards()
+        self.export_candidates()
 
