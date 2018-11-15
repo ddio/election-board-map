@@ -1,5 +1,8 @@
 module.exports = {
   mode: 'universal',
+  router: {
+    base: '/election-board-map/'
+  },
 
   /*
   ** Headers of the page
