@@ -1,5 +1,27 @@
 import datas from '@/../datas/candidates.json'
 
+/*
+
+Example data:
+[
+  "65532": {
+    "district": null,
+    "county": "桃園市",
+    "name": "蘇世岳",
+    "party": "無黨籍",
+    "image": "",
+    "number": null,
+    "type": "councilors",
+    "boards_set": [
+      493
+    ],
+    "id": 65532,
+    "candidate": 65532
+  }
+]
+
+*/
+
 const api = {
   get (id) {
     return datas[id]

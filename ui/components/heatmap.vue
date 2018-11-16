@@ -1,6 +1,6 @@
 <template lang="pug">
   .heatmap.h-100
-    l-map.heatmap__map(ref="map" :zoom="zoom" :center="center")
+    l-map.heatmap__map(ref="map" :zoom="9" :center="mapCenter")
       // url="https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png"
       // url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       l-tile-layer(
@@ -42,6 +42,9 @@ export default {
     }
   },
   computed: {
+    mapCenter () {
+      return L.latLng(this.center[0], this.center[1])
+    },
     tooltipVisible () {
       return this.tooltipPoints.length > 0
     },
@@ -52,7 +55,7 @@ export default {
     },
     tooltipCandidatesCount () {
       if (this.tooltipVisible) {
-        const candidates = _.uniq(this.tooltipPoints.map(p => p.o.candaidates).flat())
+        const candidates = _.uniq(this.tooltipPoints.map(p => p.o.candidates).flat())
         return candidates.length
       }
     },
@@ -91,7 +94,8 @@ export default {
   },
   methods: {
     initHexBin () {
-      const points = _.values(boardService.all())
+      const candidate_boards = _.map(candidatesService.all(), candidate => candidate.boards_set).flat()
+      const points = candidate_boards.map(boardId => boardService.get(boardId))
       const self = this
 
       const options = {
@@ -103,24 +107,24 @@ export default {
       this.map = this.$refs.map.mapObject
       this.hexLayer = L.hexbinLayer(options).addTo(this.map)
 
-      this.hexLayer
-        .lng(function(d) { return d.coordinates[1]; })
-        .lat(function(d) { return d.coordinates[0]; })
-        .colorScale().range(['#fff3e0', '#f57c00'])
+      this.hexLayer.colorScale().range(['#fff3e0', '#f57c00'])
 
-      this.hexLayer.hoverHandler({
-        mouseover (map, data, qq) {
-          const e = d3.event
-          self.lastMousePosition = {
-            x: e.clientX,
-            y: e.clientY
+      this.hexLayer
+        .lng(function(d) { return d.coordinates[1] })
+        .lat(function(d) { return d.coordinates[0] })
+        .hoverHandler({
+          mouseover (map, data, qq) {
+            const e = d3.event
+            self.lastMousePosition = {
+              x: e.clientX,
+              y: e.clientY
+            }
+            self.tooltipPoints = data
+          },
+          mouseout: (...args) => {
+            this.tooltipPoints = []
           }
-          self.tooltipPoints = data
-        },
-        mouseout: (...args) => {
-          this.tooltipPoints = []
-        }
-      })
+        })
 
       this.hexLayer.data(points)
 
