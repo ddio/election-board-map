@@ -1,6 +1,6 @@
 <template lang="pug">
   .heatmap.h-100
-    l-map.heatmap__map(ref="map" :zoom="9" :center="mapCenter")
+    l-map.heatmap__map(ref="map" :zoom="zoom" :center="mapCenter")
       // url="https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png"
       // url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       l-tile-layer(

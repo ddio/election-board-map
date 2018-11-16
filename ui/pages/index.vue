@@ -1,16 +1,18 @@
 <template lang="pug">
   main.vh-100.vw-100
     no-ssr
-      heat-map(:center="mapCenter", :zoom="mapZoom")
+      heat-map(v-if="!waitGeoInit" :center="mapCenter", :zoom="mapZoom")
     transition(name="fade")
-      .absolute.absolute--fill.flex.items-center.justify-center.bg-black-30.z-9999(v-if="showGeoTips")
-        .ba.bg-white.w6.tc.pa3
+      .absolute.absolute--fill.flex.items-center.justify-center.bg-black-30.z-9999(v-if="hasTipToShow")
+        .ba.bg-white.tc.pa3(v-show="showGeoTips")
           h2.f3.mt3.mb4 嘿，想看看你附近有哪些看板嗎？
           .flex.justify-around
             button.ba.bg-near-white.w-40.pa3.pointer.hover-bg-light-gray(@click="showGeoTips = false")
               | 讓我自己逛逛
             button.ba.w-40.bg-green.white.pointer.hover-bg-dark-green(@click="getLocation")
               | 跳到我附近
+        .ba.bg-white.w5.tc.pa3(v-show="waitGeoInit")
+          h2.f3.mt3.mb4 地圖定位中..
 
 </template>
 <script>
@@ -23,8 +25,14 @@ export default {
   data () {
     return {
       showGeoTips: false,
+      waitGeoInit: false,
       mapCenter: [23.6068584,120.9653962],
       mapZoom: 8.25,
+    }
+  },
+  computed: {
+    hasTipToShow () {
+      return this.showGeoTips || this.waitGeoInit
     }
   },
   mounted () {
@@ -59,12 +67,21 @@ export default {
     },
     getLocation () {
       this.showGeoTips = false
+      this.waitGeoInit = true
       navigator.geolocation.getCurrentPosition(position => {
         this.mapCenter = [
           position.coords.latitude,
           position.coords.longitude
         ]
         this.mapZoom = 14
+        setTimeout(() => {
+          this.waitGeoInit = false
+        }, 300)
+      }, (err) => {
+        if (err.code === 1) {
+          alert('被拒絕了 T___T 請重開瀏覽器，或解除位置存取的封鎖')
+        }
+        this.waitGeoInit = false
       })
     }
   }
