@@ -23,6 +23,10 @@ Example data:
 */
 
 const api = {
+  type: {
+    MAYORS: 'mayors',
+    COUNCILORS: 'councilors'
+  },
   get (id) {
     return datas[id]
   },

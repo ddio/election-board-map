@@ -1,5 +1,5 @@
 import boardData from '@/../datas/boards.json'
-
+import _ from 'lodash'
 /*
 
 Example data:

@@ -1,6 +1,13 @@
 <template lang="pug">
   .heatmap.h-100
-    l-map.heatmap__map(ref="map" :zoom="zoom" :center="mapCenter")
+    l-map.heatmap__map(
+      ref="map"
+      :zoom="zoom"
+      :center="mapCenter"
+      :options="mapOptions"
+      @moveend="onBoundChanged"
+      @zoomend="onBoundChanged"
+    )
       // url="https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png"
       // url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       l-tile-layer(
@@ -20,6 +27,7 @@ import * as d3 from 'd3'
 import boardService from '@/services/boards'
 import candidatesService from '@/services/candidates'
 import _ from 'lodash'
+import { mapMutations } from 'vuex'
 
 const TP_OFFSET = 32
 
@@ -38,7 +46,10 @@ export default {
     return {
       tooltipPoints: [],
       lastMousePosition: null,
-      mapAttribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      mapAttribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      mapOptions: {
+        zoomControl: false
+      }
     }
   },
   computed: {
@@ -88,18 +99,25 @@ export default {
     }
   },
   mounted () {
+    // avoid zoom + move triger this twice
+    const realOnBoundChanged = this.onBoundChanged
+    this.onBoundChanged = _.debounce(e => {
+      realOnBoundChanged(e)
+    }, 100)
+
     this.$nextTick(() => {
       this.initHexBin()
+      realOnBoundChanged()
     })
   },
   methods: {
+    ...mapMutations(['mapBound']),
     initHexBin () {
       const candidate_boards = _.map(candidatesService.all(), candidate => candidate.boards_set).flat()
       const points = candidate_boards.map(boardId => boardService.get(boardId))
       const self = this
 
       const options = {
-        radius : 14,
         opacity: 0.8,
         duration: 500
       }
@@ -128,14 +146,21 @@ export default {
 
       this.hexLayer.data(points)
 
+    },
+    onBoundChanged (event) {
+      const bound = this.map.getBounds()
+      this.$emit('update:bound', bound)
+      this.mapBound(bound)
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/defines.scss';
+
 .heatmap {
   /deep/ .hexbin-hexagon {
-    stroke: #f57c00;
+    stroke: $primary;
     stroke-width: 1px;
   }
 
