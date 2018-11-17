@@ -17,6 +17,12 @@
       l-control-zoom(
         position="topright"
       )
+      l-marker(
+        v-for="(latlng, i) in activeContent.latlngs"
+        :key="i"
+        :lat-lng="latlng"
+        @click="selectActiveBoard(i)"
+      )
       l-layer-group(ref="popupWrapper")
         l-popup(
           :lat-lng="popupContent.latlng"
@@ -44,6 +50,11 @@
       :content="popupContent"
       :galleryIndex.sync="hexGalleryIndex"
     )
+    hex-gallery(
+      :visible.sync="activeGalleryVisible"
+      :content="activeContent"
+      :galleryIndex.sync="activeGalleryIndex"
+    )
     .heatmap__tooltip.dh.db-l.absolute.bg-white.pa2.ba.b--black-50.w5(v-show="tooltipVisible" :style="tooltipPosition" ref="tooltip")
       .f5.mb2.tc
         strong {{tooltipContent.title}}
@@ -57,7 +68,7 @@ import * as d3 from 'd3'
 import boardService from '@/services/boards'
 import candidatesService from '@/services/candidates'
 import _ from 'lodash'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
 import HexGallery from '@/components/HexGallery'
 
@@ -98,10 +109,38 @@ export default {
       },
       selectedHexbin: null,
       hexGalleryVisible: false,
-      hexGalleryIndex: 0
+      hexGalleryIndex: 0,
+
+      activeGalleryVisible: false,
+      activeGalleryIndex: 0
     }
   },
   computed: {
+    ...mapState(['activeCandidateId']),
+    activeContent () {
+      if (!this.activeCandidateId) {
+        return {
+          latlngs: [],
+          boards: [],
+          imgs: []
+        }
+      }
+
+      const boards = boardService.find(
+        candidatesService.get(this.activeCandidateId).boards_set
+      )
+
+      return {
+        latlngs: boards.map(board => L.latLng(board.coordinates[0], board.coordinates[1])),
+        boards,
+        imgs: boards.map(board => {
+          return {
+            url: boardService.image(board.image),
+            alt: `${board.county}${board.road}`
+          }
+        })
+      }
+    },
     mapCenter () {
       return L.latLng(this.center[0], this.center[1])
     },
@@ -192,6 +231,27 @@ export default {
     }
   },
   watch: {
+    activeContent () {
+      if (this.activeContent.latlngs.length) {
+        const lats = this.activeContent.latlngs.map(latlng => latlng.lat)
+        const lngs = this.activeContent.latlngs.map(latlng => latlng.lng)
+        const maxLat = Math.max(...lats)
+        const maxLng = Math.max(...lngs)
+        const minLat = Math.min(...lats)
+        const minLng = Math.min(...lngs)
+
+        const bounds = L.latLngBounds(
+          [minLat, minLng],
+          [maxLat, maxLng]
+        )
+
+        if (!this.map.getBounds().contains(bounds)) {
+          this.map.fitBounds(bounds, {
+            padding: [60, 60]
+          })
+        }
+      }
+    },
     popupContent (newVal) {
       if (this.popupContent.latlng) {
         this.$nextTick(() => {
@@ -226,7 +286,19 @@ export default {
   },
   methods: {
     ...mapMutations(['mapBound']),
+    selectActiveBoard (index) {
+      this.activeGalleryIndex = index
+      this.activeGalleryVisible = true
+    },
     initHexBin () {
+      // check if window width < 60rem
+      const isSmallScreen = document.body.clientWidth < 60 * 16
+
+      if (isSmallScreen) {
+        this.popupOptions.minWidth = 200
+        this.popupOptions.maxWidth = 200
+      }
+
       const candidate_boards = _.map(candidatesService.all(), candidate => candidate.boards_set).flat()
       const points = candidate_boards.map(boardId => boardService.get(boardId))
 
@@ -331,6 +403,16 @@ export default {
       font-size: 3rem;
       line-height: 8rem;
     }
+
+    @media screen and (max-width: 60em) {
+      height: 4rem;
+      width: 4rem;
+
+      i {
+        font-size: 2rem;
+        line-height: 4rem;
+      }
+    }
   }
 }
 
@@ -342,7 +424,7 @@ export default {
 
 .leaflet-bottom {
   @media screen and (max-width: 60em) {
-    bottom: 5.6rem;
+    bottom: 5.2rem;
   }
 }
 </style>

@@ -17,7 +17,7 @@
             button.br2.ba.w-40.bg-green.white.pointer.hover-bg-dark-green(@click="getLocation")
               | 跳到我附近
         .ba.bg-white.w5.tc.pa3(v-show="waitGeoInit")
-          h2.f3.mt3.mb4 地圖定位中..
+          h2.f3.mv4 地圖定位中..
 
 </template>
 <script>

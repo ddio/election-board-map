@@ -31,6 +31,9 @@ const api = {
   all () {
     return boardData
   },
+  find (ids) {
+    return ids.map(id => boardData[id])
+  },
   image (imageName) {
     return api.imagePrefix + imageName
   }

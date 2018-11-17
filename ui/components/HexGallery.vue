@@ -29,6 +29,7 @@
 <script>
 import candidatesService from '@/services/candidates'
 import CallToAction from '@/components/CallToAction'
+import _ from 'lodash'
 
 const typeDict = {
   mayors: '縣市長',
@@ -46,7 +47,10 @@ export default {
     },
     content: {
       type: Object,
-      required: true
+      required: true,
+      validators (content) {
+        return _.isArray(content.imgs) && _.isArray(content.boards)
+      }
     },
     galleryIndex: {
       type: Number,

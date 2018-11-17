@@ -14,9 +14,11 @@
           :class="{'dist__action--active': isCouncilorsSelected}"
         ) 議員 ({{nCouncilors}})
     .dist__body.pa3
-      .pa2.bb.b--light-gray.flex.items-center.f6.hover-bg-near-white(
+      .pa2.bb.b--light-gray.flex.items-center.f6.hover-bg-near-white.pointer.dim(
         v-for="person in people"
         :key="person.id"
+        @click="toggleCandidate(person)"
+        :class="{'dist--active': isCandidateActive(person)}"
       )
         .ph1.w-30.tc.gray {{person.party}}
         .ph1.w-40.tc {{person.name}}
@@ -24,14 +26,15 @@
 </template>
 <script>
 import _ from 'lodash'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import candidatesService from '@/services/candidates'
 
 export default {
   data () {
     return {
       isMayorsSelected: false,
-      isCouncilorsSelected: false
+      isCouncilorsSelected: false,
+      lastCandidate: null,
     }
   },
   computed: {
@@ -71,6 +74,7 @@ export default {
     this.ensureSthOpened()
   },
   methods: {
+    ...mapMutations(['activeCandidateId']),
     ensureSthOpened () {
       if (this.hasMayors && !this.hasCouncilors) {
         this.isMayorsSelected = true
@@ -85,6 +89,21 @@ export default {
           this.isCouncilorsSelected = true
         }
       }
+    },
+    toggleCandidate (candidate) {
+      if (this.lastCandidate && candidate.id === this.lastCandidate.id) {
+        this.activeCandidateId(null)
+        this.lastCandidate = null
+      } else {
+        this.activeCandidateId(candidate.id)
+        this.lastCandidate = candidate
+      }
+    },
+    isCandidateActive (candidate) {
+      if (!this.lastCandidate) {
+        return false
+      }
+      return this.lastCandidate.id === candidate.id
     },
     toggleMayors () {
       if (this.hasCouncilors) {
@@ -121,6 +140,10 @@ export default {
 
   &__action:not(:last-child) {
     margin-right: 0.5rem;
+  }
+
+  &--active {
+    background: $secondary-bg;
   }
 
   &__body {

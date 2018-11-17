@@ -4,7 +4,8 @@ import _ from 'lodash'
 
 export const state = () => {
   return {
-    mapBound: null
+    mapBound: null,
+    activeCandidateId: null
   }
 }
 
@@ -12,6 +13,9 @@ export const mutations = {
   mapBound (state, bound) {
     state.mapBound = bound
   },
+  activeCandidateId (state, candidateId) {
+    state.activeCandidateId = candidateId
+  }
 }
 
 export const actions = {
