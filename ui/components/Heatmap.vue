@@ -62,6 +62,8 @@ import { mapMutations } from 'vuex'
 import HexGallery from '@/components/HexGallery'
 
 const TP_OFFSET = 32
+const TP_W = 256
+const TP_H = 100
 
 export default {
   components: {
@@ -172,16 +174,14 @@ export default {
         xy.x = this.lastMousePosition.x
         xy.y = this.lastMousePosition.y
 
-        const dom = this.$refs.tooltip
-
-        if (xy.x + TP_OFFSET + dom.clientWidth > document.body.clientWidth) {
-          xy.x = xy.x - TP_OFFSET - dom.clientWidth
+        if (xy.x + TP_OFFSET + TP_W > document.body.clientWidth) {
+          xy.x = xy.x - TP_OFFSET - TP_W
         } else {
           xy.x += TP_OFFSET
         }
 
-        if (xy.y + dom.clientHeight > document.body.clientHeight) {
-          xy.y -= dom.clientHeight
+        if (xy.y + TP_H > document.body.clientHeight) {
+          xy.y -= TP_H
         }
       }
 
