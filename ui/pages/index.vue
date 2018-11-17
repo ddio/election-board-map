@@ -2,7 +2,7 @@
   main.vh-100.vw-100
     no-ssr
       heat-map(v-if="!waitGeoInit" :center="mapCenter", :zoom="mapZoom")
-    .sidebar.dh.db-l.shadow-2.br1.z-9999.absolute.overflow-y-auto
+    .sidebar.dh.db-l.shadow-5.br1.z-999.absolute.overflow-y-auto
       info-panel
     transition(name="fade")
       .absolute.absolute--fill.flex.items-center.justify-center.bg-black-30.z-9999(v-if="hasTipToShow")
@@ -99,9 +99,10 @@ export default {
 
 .sidebar {
   width: 24rem;
-  max-height: calc(100vh - 4rem);
-  left: 2rem;
-  top: 2rem;
+  max-height: calc(100vh - 20px);
+  /* to be consistent with leaflet zoom control */
+  left: 10px;
+  top: 10px;
 }
 </style>
 <style lang="scss">

@@ -14,13 +14,13 @@
           :class="{'dist__action--active': isCouncilorsSelected}"
         ) 議員 ({{nCouncilors}})
     .dist__body.pa3
-      .pa2.bb.b--light-gray(
+      .pa2.bb.b--light-gray.flex.items-center.f6.hover-bg-near-white(
         v-for="person in people"
         :key="person.id"
       )
-        .dib.w-third.tc.gray {{person.party}}
-        .dib.w-third.tc {{person.name}}
-        .dib.w-third.tc.orange x{{person.boards_set.length}} 看板
+        .ph1.w-30.tc.gray {{person.party}}
+        .ph1.w-40.tc {{person.name}}
+        .ph1.w-30.tc.orange x{{person.boards_set.length}} 看板
 </template>
 <script>
 import _ from 'lodash'
@@ -124,7 +124,7 @@ export default {
   }
 
   &__body {
-    max-height: 40vh;
+    max-height: calc(100vh - 23rem);
     overflow: auto;
   }
 }

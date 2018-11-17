@@ -32,7 +32,7 @@ const api = {
     return boardData
   },
   image (imageName) {
-    return imagePrefix + imageName
+    return api.imagePrefix + imageName
   }
 }
 

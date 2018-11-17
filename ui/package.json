@@ -16,6 +16,7 @@
   "dependencies": {
     "@asymmetrik/leaflet-d3": "^4.2.0",
     "@nuxtjs/axios": "^5.0.0",
+    "@nuxtjs/font-awesome": "^1.0.3",
     "cross-env": "^5.2.0",
     "d3": "^5.7.0",
     "d3-hexbin": "^0.2.2",
