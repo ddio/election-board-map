@@ -1,7 +1,7 @@
 <template lang="pug">
   .info.h-100.pa2
-    map-header.br1.bg-white.shadow-1.pa3.mb3
-    board-dist.br1.bg-white.shadow-1.mb3
+    map-header.br1.bg-white.shadow-1.pa3.mb2
+    board-dist.br1.bg-white.shadow-1.mb2
     about-this.br1.bg-white.shadow-1
 </template>
 <script>

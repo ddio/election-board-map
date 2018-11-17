@@ -2,17 +2,17 @@
   section.dist
     h2.pa3.f5.bb.b--light-gray.flex.justify-between.items-center
       div 看板分佈
-      .dist__cats
-        a.dist__action.pointer.link.dim.br1.ph3.pv1.dib(
+      .dist__cats.normal.gray
+        a.dist__action.pointer.link.dim.br1.ph3.pv1.dib.ba.b--black-20(
           v-show="hasMayors"
           @click="toggleMayors"
           :class="{'dist__action--active': isMayorsSelected}"
-        ) 縣市長({{nMayors}})
-        a.dist__action.pointer.link.dim.br1.ph3.pv1.dib(
+        ) 縣市長 ({{nMayors}})
+        a.dist__action.pointer.link.dim.br1.ph3.pv1.dib.ba.b--black-20(
           v-show="hasCouncilors"
           @click="toggleCouncilors"
           :class="{'dist__action--active': isCouncilorsSelected}"
-        ) 議員({{nCouncilors}})
+        ) 議員 ({{nCouncilors}})
     .dist__body.pa3
       .pa2.bb.b--light-gray(
         v-for="person in people"
@@ -113,8 +113,9 @@ export default {
     outline: none;
 
     &--active {
-      background: $secondary;
-      color: white;
+      border-color: $secondary;
+      color: $secondary;
+      background: $secondary-bg;
     }
   }
 
