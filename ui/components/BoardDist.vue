@@ -124,7 +124,7 @@ export default {
   }
 
   &__body {
-    max-height: calc(100vh - 23rem);
+    max-height: calc(100vh - 25rem);
     overflow: auto;
 
     @media screen and (max-width: 60em) {
