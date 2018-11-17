@@ -1,7 +1,7 @@
 <template lang="pug">
   section
     h2.f5
-      span(v-if="visibleCandidates.length === 0")
+      span(v-if="visibleCandidates.length !== 0").flex.justify-between.items-center
         | 竟然沒有人有沒看板？！
         call-to-action.normal
       span(v-else-if="isSomeCandidateEmpty").flex.justify-between.items-center
