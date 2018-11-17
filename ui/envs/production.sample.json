@@ -1,0 +1,5 @@
+{
+  "sentry": {
+    "publicDSN": "https://your.sentry.public/dsn"
+  }
+}

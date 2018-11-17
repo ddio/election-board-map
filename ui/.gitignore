@@ -7,6 +7,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Env Config
+!envs/production.sample.json
+envs/*
+
 # Runtime data
 pids
 *.pid

@@ -1,9 +1,21 @@
+const fs = require('fs')
+const path = require('path')
+
+let env = {}
+
+if (process.env.NODE_ENV) {
+  configPath = path.join(__dirname, 'envs', `${process.env.NODE_ENV}.json`)
+  if (fs.existsSync(configPath)) {
+    env = JSON.parse(fs.readFileSync(configPath))
+  }
+}
+
 module.exports = {
   mode: 'universal',
   router: {
     base: '/election-board-map/'
   },
-
+  env,
   /*
   ** Headers of the page
   */
@@ -44,6 +56,7 @@ module.exports = {
     // Doc: https://github.com/nuxt-community/axios-module#usage
     '@nuxtjs/axios',
     '@nuxtjs/font-awesome',
+    '@/modules/sentry',
     'nuxt-leaflet'
   ],
   /*
