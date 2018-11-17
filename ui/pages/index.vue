@@ -2,8 +2,7 @@
   main.vh-100.vw-100
     no-ssr
       heat-map(v-if="!waitGeoInit" :center="mapCenter", :zoom="mapZoom")
-    .sidebar.dn.db-l.shadow-5.br1.z-999.absolute.overflow-y-auto
-      info-panel
+    info-panel
     .headmenu.db.dn-l.absolute.z-999.top-0.w-100
       map-header.bg-white.shadow-1.pa3
     bottom-panel
@@ -102,14 +101,6 @@ export default {
 .button--primary {
   background: #f57c00;
   color: white;
-}
-
-.sidebar {
-  width: 24rem;
-  max-height: calc(100vh - 20px);
-  /* to be consistent with leaflet zoom control */
-  left: 10px;
-  top: 10px;
 }
 </style>
 <style lang="scss">
