@@ -1,5 +1,5 @@
 <template lang="pug">
-  external-link.cta.br1.white.ph3.dim.pv1.f6(:to="to")
+  external-link.cta.br1.white.ph3.dim.pv1.f6.dib(:to="to")
     slot 來拍照吧！
 </template>
 <script>

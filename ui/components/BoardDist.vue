@@ -126,6 +126,10 @@ export default {
   &__body {
     max-height: calc(100vh - 23rem);
     overflow: auto;
+
+    @media screen and (max-width: 60em) {
+      max-height: calc(26vh);
+    }
   }
 }
 </style>

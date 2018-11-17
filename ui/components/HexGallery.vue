@@ -1,7 +1,7 @@
 <template lang="pug">
   transition(name="fade")
     .absolute.absolute--fill.flex.items-center.justify-center.bg-black-50.z-9999(v-if="visible" @click="closeIt")
-      .hexgallery.shadow-5.bg-white.br3.flex.flex-column.mw6-l.mw-100.w-100(@click.stop)
+      .hexgallery.shadow-5.bg-white.br3.flex.flex-column.mw6-l.w-90(@click.stop)
         .aspect-ratio.aspect-ratio--1x1.bg-center.cover.br3.br--top(
           :style="{backgroundImage: `url('${img.url}')`}"
         )
@@ -19,11 +19,11 @@
           .dib.f5.ma1(v-for="cand in candidates" :key="cand.key")
             span.gray {{cand.party}}
             span.black {{cand.str}}
-        .tc.pa3.bt.b--black-10
+        p.tc.pa3.bt.b--black-10.lh-copy
           | 資料有誤？請
-          call-to-action.mh2(to="https://www.facebook.com/messages/t/readr.tw") 私訊 Readr 粉絲頁
+          call-to-action.mh1.mb1(to="https://www.facebook.com/messages/t/readr.tw") 私訊 Readr 粉絲頁
           | 或
-          call-to-action.mh2(to="mailto:readr@readr.tw") 寫信給 Readr
+          call-to-action.mh1(to="mailto:readr@readr.tw") 寫信給 Readr
 
 </template>
 <script>

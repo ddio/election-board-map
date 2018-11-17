@@ -333,5 +333,16 @@ export default {
     }
   }
 }
-</style>
 
+.leaflet-right .leaflet-control.leaflet-control-zoom {
+  @media screen and (max-width: 60em) {
+    margin-top: 4rem;
+  }
+}
+
+.leaflet-bottom {
+  @media screen and (max-width: 60em) {
+    bottom: 5.6rem;
+  }
+}
+</style>

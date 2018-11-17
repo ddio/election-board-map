@@ -2,8 +2,11 @@
   main.vh-100.vw-100
     no-ssr
       heat-map(v-if="!waitGeoInit" :center="mapCenter", :zoom="mapZoom")
-    .sidebar.dh.db-l.shadow-5.br1.z-999.absolute.overflow-y-auto
+    .sidebar.dn.db-l.shadow-5.br1.z-999.absolute.overflow-y-auto
       info-panel
+    .headmenu.db.dn-l.absolute.z-999.top-0.w-100
+      map-header.bg-white.shadow-1.pa3
+    bottom-panel
     transition(name="fade")
       .absolute.absolute--fill.flex.items-center.justify-center.bg-black-30.z-9999(v-if="hasTipToShow")
         .bg-white.tc.pa3.br2.shadow-1(v-show="showGeoTips")
@@ -20,11 +23,15 @@
 <script>
 import HeatMap from '@/components/Heatmap'
 import InfoPanel from '@/components/InfoPanel'
+import BottomPanel from '@/components/BottomPanel'
+import MapHeader from '@/components/MapHeader'
 
 export default {
   components: {
     HeatMap,
-    InfoPanel
+    InfoPanel,
+    MapHeader,
+    BottomPanel
   },
   data () {
     return {
