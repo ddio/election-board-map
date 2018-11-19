@@ -168,9 +168,7 @@ export default {
       })
 
       const relatedPersonIds = _.uniq(
-        boards
-          .map(board => board.candidates)
-          .flat()
+        _.flatten(boards.map(board => board.candidates))
       )
       const relatedPeople = candidatesService.find(relatedPersonIds)
       const mayors = relatedPeople.filter(person => person.type === candidatesService.type.MAYORS)
@@ -196,7 +194,7 @@ export default {
       const boards = _.uniqBy(this.tooltipPoints, (data => data.o.id)).map(bin => bin.o)
 
       const title = ['county', 'road'].map(key => boards[0][key]).join('')
-      const candidates = _.uniq(boards.map(board => board.candidates).flat())
+      const candidates = _.uniq(_.flatten(boards.map(board => board.candidates)))
 
       return {
         title,
@@ -299,7 +297,7 @@ export default {
         this.popupOptions.maxWidth = 200
       }
 
-      const candidate_boards = _.map(candidatesService.all(), candidate => candidate.boards_set).flat()
+      const candidate_boards = _.flatten(_.map(candidatesService.all(), candidate => candidate.boards_set))
       const points = candidate_boards.map(boardId => boardService.get(boardId))
 
       const options = {
