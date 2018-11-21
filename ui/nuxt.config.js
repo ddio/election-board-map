@@ -56,6 +56,12 @@ module.exports = {
     // Doc: https://github.com/nuxt-community/axios-module#usage
     '@nuxtjs/axios',
     '@nuxtjs/font-awesome',
+    [
+      '@nuxtjs/google-analytics',
+      {
+        id: 'UA-129581083-1'
+      }
+    ],
     '@/modules/sentry',
     'nuxt-leaflet'
   ],
