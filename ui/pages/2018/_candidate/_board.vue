@@ -19,7 +19,7 @@ export default {
   head () {
     const board = this.currentBoard
     const cand = this.currentCandidate
-    const title = `${board.county}${this.toTypeStr(cand.type)}參選人${cand.name}`
+    const title = `${cand.county}${this.toTypeStr(cand.type)}參選人${cand.name}`
     return {
       title,
       meta: [

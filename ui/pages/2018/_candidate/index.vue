@@ -12,12 +12,13 @@ export default {
   },
   head () {
     const cand = this.currentCandidate
-    const board = {image: ''}
-    const title = `${board.county}${this.toTypeStr(cand.type)}參選人${cand.name}`
+    let board = {image: ''}
 
     if (cand.boards_set.length > 0) {
-      board.image = boardService.get(cand.boards_set[0]).image
+      board = boardService.get(cand.boards_set[0])
     }
+
+    const title = `${cand.county}${this.toTypeStr(cand.type)}參選人${cand.name}`
 
     return {
       title,
