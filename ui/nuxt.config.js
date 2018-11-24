@@ -10,21 +10,33 @@ if (process.env.NODE_ENV) {
   }
 }
 
+routesPath = path.join(__dirname, '../datas/routes.json')
+
 module.exports = {
-  mode: 'universal',
+  mode: 'spa',
   router: {
     base: '/election-board-map/'
   },
   env,
+  generate: {
+    routes: JSON.parse(fs.readFileSync(routesPath))
+  },
   /*
   ** Headers of the page
   */
   head: {
-    title: '看板追追追地圖',
+    titleTemplate: origTitle => {
+      if (origTitle) {
+        return `${origTitle} | 看板追追追地圖`
+      } else {
+        return '看板追追追地圖'
+      }
+    },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '看板追追追地圖' }
+      { hid: 'description', name: 'description', content: '看板追追追地圖' },
+      { hid: 'og:image', name: 'og:image', content: 'https://ddio.github.io/election-board-map/ogimage.png'},
     ],
     link: []
   },
@@ -89,8 +101,6 @@ module.exports = {
           loader: 'eslint-loader',
           exclude: /(node_modules)/
         })
-
-        config.devtool = '#source-map'
       }
     }
   }

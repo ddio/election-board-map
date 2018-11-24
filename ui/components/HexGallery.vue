@@ -31,11 +31,6 @@ import candidatesService from '@/services/candidates'
 import CallToAction from '@/components/CallToAction'
 import _ from 'lodash'
 
-const typeDict = {
-  mayors: '縣市長',
-  councilors: '議員'
-}
-
 export default {
   components: {
     CallToAction
@@ -83,7 +78,7 @@ export default {
       return candidatesService.find(this.board.candidates).map(cand => {
         return {
           party: cand.party,
-          str: `${typeDict[cand.type]}參選人${cand.name}`
+          str: `${this.toTypeStr(cand.type)}參選人${cand.name}`
         }
       })
     }

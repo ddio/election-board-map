@@ -57,9 +57,22 @@ class Command(BaseCommand):
             Terms.objects.filter(election_year='2018'),
             formatter
         )
+        routes = []
+        for candidate_id in candidates:
+            route_prefix = '/2018/{}-{}'.format(candidates[candidate_id]['name'], candidate_id)
+            if not candidates[candidate_id]['boards_set']:
+                routes.append(route_prefix)
+
+            for board_id in candidates[candidate_id]['boards_set']:
+                routes.append('{}/{}'.format(route_prefix, board_id))
+
         self.stdout.write('Export {} candidates'.format(len(candidates)))
         with open(path.join(self.export_dir, 'candidates.json'), 'w') as outfile:
             json.dump(candidates, outfile, ensure_ascii=False)
+
+        self.stdout.write('Export {} routes'.format(len(routes)))
+        with open(path.join(self.export_dir, 'routes.json'), 'w') as outfile:
+            json.dump(routes, outfile, ensure_ascii=False)
 
     def handle(self, *args, **options):
         # 匯出所有資料，無論有無查核過

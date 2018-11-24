@@ -1,6 +1,12 @@
 'use strict'
 import Vue from 'vue'
 import candidatesService from '@/services/candidates'
+import boardService from '@/services/boards'
+
+const typeDict = {
+  mayors: '縣市長',
+  councilors: '議員'
+}
 
 Vue.mixin({
   computed: {
@@ -16,12 +22,18 @@ Vue.mixin({
         return null
       }
     },
+    currentCandidate () {
+      return candidatesService.get(this.currentCandidateId)
+    },
     currentBoardId () {
       if (this.$route.params.board) {
         return this.$route.params.board.match(/(\d+)/)[1] - 0
       } else {
         return null
       }
+    },
+    currentBoard () {
+      return boardService.get(this.currentBoardId)
     },
     currentBoardIndex () {
       if (this.currentBoardId && this.currentCandidateId) {
@@ -36,6 +48,9 @@ Vue.mixin({
     }
   },
   methods: {
+    toTypeStr (type) {
+      return typeDict[type]
+    },
     composeCandidateUrl ({candidateId = null, boardId = null, noBoard = false}) {
       const route = {
         name: '2018-candidate-board',
