@@ -31,9 +31,6 @@ export default {
     }
   },
   methods: {
-    qqq () {
-      console.log('qqq')
-    },
     toggleIt () {
       this.isVisible = !this.isVisible
     },

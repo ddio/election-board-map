@@ -2,7 +2,7 @@
   .heatmap.h-100
     l-map.heatmap__map(
       ref="map"
-      :zoom="zoom"
+      :zoom="mapZoom"
       :center="mapCenter"
       :options="mapOptions"
       @moveend="onBoundChanged"
@@ -50,11 +50,6 @@
       :content="popupContent"
       :galleryIndex.sync="hexGalleryIndex"
     )
-    hex-gallery(
-      :visible.sync="activeGalleryVisible"
-      :content="activeContent"
-      :galleryIndex.sync="activeGalleryIndex"
-    )
     .heatmap__tooltip.dh.db-l.absolute.bg-white.pa2.ba.b--black-50.w5(v-show="tooltipVisible" :style="tooltipPosition" ref="tooltip")
       .f5.mb2.tc
         strong {{tooltipContent.title}}
@@ -68,7 +63,7 @@ import * as d3 from 'd3'
 import boardService from '@/services/boards'
 import candidatesService from '@/services/candidates'
 import _ from 'lodash'
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations, mapState, mapGetters } from 'vuex'
 
 import HexGallery from '@/components/HexGallery'
 
@@ -79,16 +74,6 @@ const TP_H = 100
 export default {
   components: {
     HexGallery
-  },
-  props: {
-    center: {
-      type: Array,
-      required: true
-    },
-    zoom: {
-      type: Number,
-      required: true
-    }
   },
   data () {
     return {
@@ -110,40 +95,11 @@ export default {
       selectedHexbin: null,
       hexGalleryVisible: false,
       hexGalleryIndex: 0,
-
-      activeGalleryVisible: false,
-      activeGalleryIndex: 0
     }
   },
   computed: {
-    ...mapState(['activeCandidateId']),
-    activeContent () {
-      if (!this.activeCandidateId) {
-        return {
-          latlngs: [],
-          boards: [],
-          imgs: []
-        }
-      }
-
-      const boards = boardService.find(
-        candidatesService.get(this.activeCandidateId).boards_set
-      )
-
-      return {
-        latlngs: boards.map(board => L.latLng(board.coordinates[0], board.coordinates[1])),
-        boards,
-        imgs: boards.map(board => {
-          return {
-            url: boardService.image(board.image),
-            alt: `${board.county}${board.road}`
-          }
-        })
-      }
-    },
-    mapCenter () {
-      return L.latLng(this.center[0], this.center[1])
-    },
+    ...mapState(['activeCandidateId', 'mapZoom']),
+    ...mapGetters(['mapCenter', 'activeContent']),
     popupContent () {
       if (!this.selectedHexbin) {
         return {}
@@ -255,10 +211,10 @@ export default {
         this.$nextTick(() => {
           this.$refs.popupWrapper.mapObject.openPopup(this.popupContent.latlng)
           //  this.$refs.popupWrapper.mapObject.openPopup()
-          console.log('OPENED?',
-            this.$refs.popupWrapper.mapObject.isPopupOpen(),
-            this.$refs.popupWrapper.mapObject.getPopup()
-          )
+          // console.log('OPENED?',
+          //   this.$refs.popupWrapper.mapObject.isPopupOpen(),
+          //   this.$refs.popupWrapper.mapObject.getPopup()
+          // )
 
           setTimeout(() => {
             console.log('OPENED? 1000+',
@@ -283,10 +239,11 @@ export default {
     })
   },
   methods: {
-    ...mapMutations(['mapBound']),
+    ...mapMutations(['boundMap']),
     selectActiveBoard (index) {
-      this.activeGalleryIndex = index
-      this.activeGalleryVisible = true
+      this.$router.push(this.composeCandidateUrl({
+        boardId: this.activeContent.boards[index].id
+      }))
     },
     initHexBin () {
       // check if window width < 60rem
@@ -343,7 +300,7 @@ export default {
     onBoundChanged (event) {
       const bound = this.map.getBounds()
       this.$emit('update:bound', bound)
-      this.mapBound(bound)
+      this.boundMap(bound)
     },
     showHexGallery (imageId) {
       this.hexGalleryVisible = true

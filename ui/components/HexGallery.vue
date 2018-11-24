@@ -1,6 +1,6 @@
 <template lang="pug">
   transition(name="fade")
-    .absolute.absolute--fill.flex.items-center.justify-center.bg-black-50.z-9999(v-if="visible" @click="closeIt")
+    .absolute.absolute--fill.flex.items-center.justify-center.bg-black-50.z-9999(v-if="visible && board" @click="closeIt")
       .hexgallery.shadow-5.bg-white.br3.flex.flex-column.mw6-l.w-90(@click.stop)
         .aspect-ratio.aspect-ratio--1x1.bg-center.cover.br3.br--top(
           :style="{backgroundImage: `url('${img.url}')`}"

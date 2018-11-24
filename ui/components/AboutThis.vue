@@ -1,9 +1,9 @@
 <template lang="pug">
   section.about
-    h2.pa3.f5.bb.b--light-gray.flex.justify-between.items-center
+    h2.ma0.pa3.f5.bb.b--light-gray.flex.justify-between.items-center
       | 關於看板追追追地圖
     .pa3.f6
-      p.about__main.lh-copy.gray
+      p.about__main.lh-copy.gray.mt0
         | 本網站由 <a href="mailto:hi@ddio.io">ddio</a> 路過製作，
         | 希望能夠讓更多人一起促進台灣的政治透明度。感謝
         external-link(to="https://www.readr.tw/project/election-board") 看板追追追

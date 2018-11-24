@@ -1,11 +1,5 @@
 <template lang="pug">
-  main.vh-100.vw-100
-    no-ssr
-      heat-map(v-if="!waitGeoInit" :center="mapCenter", :zoom="mapZoom")
-    info-panel
-    .headmenu.db.dn-l.absolute.z-999.top-0.w-100
-      map-header.bg-white.shadow-1.pa3
-    bottom-panel
+  section
     transition(name="fade")
       .absolute.absolute--fill.flex.items-center.justify-center.bg-black-30.z-9999(v-if="hasTipToShow")
         .bg-white.tc.pa3.br2.shadow-1(v-show="showGeoTips")
@@ -20,24 +14,13 @@
 
 </template>
 <script>
-import HeatMap from '@/components/Heatmap'
-import InfoPanel from '@/components/InfoPanel'
-import BottomPanel from '@/components/BottomPanel'
-import MapHeader from '@/components/MapHeader'
+import { mapMutations } from 'vuex'
 
 export default {
-  components: {
-    HeatMap,
-    InfoPanel,
-    MapHeader,
-    BottomPanel
-  },
   data () {
     return {
       showGeoTips: false,
       waitGeoInit: false,
-      mapCenter: [23.6068584,120.9653962],
-      mapZoom: 8.25,
     }
   },
   computed: {
@@ -49,6 +32,7 @@ export default {
     this.initLocation()
   },
   methods: {
+    ...mapMutations(['centerMap', 'zoomMap']),
     async checkGeoPermission () {
       if (!navigator.permissions) {
         return undefined
@@ -78,11 +62,11 @@ export default {
       this.showGeoTips = false
       this.waitGeoInit = true
       navigator.geolocation.getCurrentPosition(position => {
-        this.mapCenter = [
+        this.centerMap([
           position.coords.latitude,
           position.coords.longitude
-        ]
-        this.mapZoom = 14
+        ])
+        this.zoomMap(14)
         setTimeout(() => {
           this.waitGeoInit = false
         }, 300)
@@ -96,19 +80,4 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.button--primary {
-  background: #f57c00;
-  color: white;
-}
-</style>
-<style lang="scss">
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
-</style>
 

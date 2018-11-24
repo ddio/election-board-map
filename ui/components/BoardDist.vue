@@ -1,6 +1,6 @@
 <template lang="pug">
   section.dist
-    h2.pa3.f5.bb.b--light-gray.flex.justify-between.items-center
+    h2.ma0.pa3.f5.bb.b--light-gray.flex.justify-between.items-center
       div 看板分佈
       .dist__cats.normal.gray
         a.dist__action.pointer.link.dim.br1.ph3.pv1.dib.ba.b--black-20(
@@ -14,7 +14,7 @@
           :class="{'dist__action--active': isCouncilorsSelected}"
         ) 議員 ({{nCouncilors}})
     .dist__body.pa3
-      .pa2.bb.b--light-gray.flex.items-center.f6.hover-bg-near-white.pointer.dim(
+      .pa2.bb.b--light-gray.flex.items-center.f6.hover-bg-near-white.pointer(
         v-for="person in people"
         :key="person.id"
         @click="toggleCandidate(person)"
@@ -22,7 +22,11 @@
       )
         .ph1.w-30.tc.gray {{person.party}}
         .ph1.w-40.tc {{person.name}}
-        .ph1.w-30.tc.orange x{{person.boards_set.length}} 看板
+        .ph1.w-30.tr.orange.dim(title="顯示看板" @click.stop="openBoard(person)")
+          | x{{person.boards_set.length}}
+          .dn.di-l 看板
+          .ml2.dib.pa1
+            i.fa.fa-street-view
 </template>
 <script>
 import _ from 'lodash'
@@ -34,7 +38,6 @@ export default {
     return {
       isMayorsSelected: false,
       isCouncilorsSelected: false,
-      lastCandidate: null,
     }
   },
   computed: {
@@ -60,7 +63,7 @@ export default {
       const target = this.isMayorsSelected ? candidatesService.type.MAYORS : candidatesService.type.COUNCILORS
       const people = this.regionCandidates.filter(cand => cand.type === target)
       return _.sortBy(people, person => person.boards_set.length * -1)
-    }
+    },
   },
   watch: {
     hasMayors () {
@@ -74,7 +77,7 @@ export default {
     this.ensureSthOpened()
   },
   methods: {
-    ...mapMutations(['activeCandidateId']),
+    ...mapMutations(['activateCandidate']),
     ensureSthOpened () {
       if (this.hasMayors && !this.hasCouncilors) {
         this.isMayorsSelected = true
@@ -91,19 +94,26 @@ export default {
       }
     },
     toggleCandidate (candidate) {
-      if (this.lastCandidate && candidate.id === this.lastCandidate.id) {
-        this.activeCandidateId(null)
-        this.lastCandidate = null
+      if (this.currentCandidateId && candidate.id === this.currentCandidateId) {
+        this.activateCandidate(null)
+        this.$router.push({name: '2018'})
       } else {
-        this.activeCandidateId(candidate.id)
-        this.lastCandidate = candidate
+        this.$router.push(this.composeCandidateUrl({
+          candidateId: candidate.id,
+          noBoard: true
+        }))
       }
     },
+    openBoard (candidate) {
+      this.$router.push(this.composeCandidateUrl({
+        candidateId: candidate.id
+      }))
+    },
     isCandidateActive (candidate) {
-      if (!this.lastCandidate) {
+      if (!this.currentCandidateId) {
         return false
       }
-      return this.lastCandidate.id === candidate.id
+      return this.currentCandidateId === candidate.id
     },
     toggleMayors () {
       if (this.hasCouncilors) {
@@ -147,7 +157,7 @@ export default {
   }
 
   &__body {
-    max-height: calc(100vh - 25rem);
+    max-height: calc(100vh - 26rem);
     overflow: auto;
 
     @media screen and (max-width: 60em) {

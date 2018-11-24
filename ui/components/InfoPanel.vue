@@ -64,14 +64,3 @@ export default {
   }
 }
 </style>
-<style lang="scss">
-.slide-enter-active, .slide-leave-active {
-  transition: 0.5s;
-}
-.slide-enter, .slide-leave-to {
-  transform: translate(-100%, 0);
-}
-.aaslide-leave-to {
-  transform: translate(-100%, 0);
-}
-</style>

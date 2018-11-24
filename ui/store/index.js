@@ -5,16 +5,33 @@ import _ from 'lodash'
 export const state = () => {
   return {
     mapBound: null,
-    activeCandidateId: null
+    mapCenter: [23.6068584,120.9653962],
+    mapZoom: 8.25,
+    onMapReload: false,
+
+    activeCandidateId: null,
+    activeCandidateBoardId: 0
   }
 }
 
 export const mutations = {
-  mapBound (state, bound) {
+  boundMap (state, bound) {
     state.mapBound = bound
   },
-  activeCandidateId (state, candidateId) {
+  activateCandidate (state, candidateId) {
     state.activeCandidateId = candidateId
+  },
+  centerMap (state, mapCenter) {
+    state.mapCenter = mapCenter
+  },
+  zoomMap (state, mapZoom) {
+    state.mapZoom = mapZoom
+  },
+  disableMap (state) {
+    state.onMapReload = true
+  },
+  enableMap (state) {
+    state.onMapReload = false
   }
 }
 
@@ -22,6 +39,33 @@ export const actions = {
 }
 
 export const getters = {
+  mapCenter (state) {
+    return L.latLng(state.mapCenter[0], state.mapCenter[1])
+  },
+  activeContent (state) {
+    if (!state.activeCandidateId) {
+      return {
+        latlngs: [],
+        boards: [],
+        imgs: []
+      }
+    }
+
+    const boards = boardService.find(
+      candidatesService.get(state.activeCandidateId).boards_set
+    )
+
+    return {
+      latlngs: boards.map(board => L.latLng(board.coordinates[0], board.coordinates[1])),
+      boards,
+      imgs: boards.map(board => {
+        return {
+          url: boardService.image(board.image),
+          alt: `${board.county}${board.road}`
+        }
+      })
+    }
+  },
   visibleBoards (state) {
     if (!state.mapBound) {
       return []
