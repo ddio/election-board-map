@@ -21,9 +21,9 @@
             span.black {{cand.str}}
         p.tc.pa3.bt.b--black-10.lh-copy
           | 資料有誤？請
-          call-to-action.mh1.mb1(to="https://www.facebook.com/messages/t/readr.tw") 私訊 Readr 粉絲頁
+          call-to-action.mh1.mb1(:to="`https://www.readr.tw/project/election-board/verify?board=${board.id}`") 校正資料
           | 或
-          call-to-action.mh1(to="mailto:readr@readr.tw") 寫信給 Readr
+          call-to-action.mh1(to="https://www.facebook.com/messages/t/readr.tw") 私訊 Readr 粉絲頁
 
 </template>
 <script>
